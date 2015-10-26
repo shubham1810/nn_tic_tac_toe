@@ -79,7 +79,10 @@ class Game:
 
 if __name__ == '__main__':
     PLAYER = 1
-    for i in range(10):
+    p1 = 0
+    p2 = 0
+    n = 1000
+    for i in range(n):
         PLAYER = 1
         game = Game()
         while game.check_status() == 10:  # The game continues
@@ -90,9 +93,17 @@ if __name__ == '__main__':
             game.play(move, PLAYER)
             status = game.check_status()
             if status == 1:
-                print "Player 1 has won"
+                # print "Player 1 has won"
+                p1 += 1
             elif status == -1:
-                print "Player 2 has won"
+                # print "Player 2 has won"
+                p2 += 1
             elif status == 0:
-                print "Game was a draw"
+                # print "Game was a draw"
+                pass
             PLAYER *= -1
+
+    prob_p1 = float(p1) / float(n)
+    prob_p2 = float(p2) / float(n)
+    print "Probability of player 1: ", str(prob_p1)
+    print "Probability of player 2: ", str(prob_p2)
