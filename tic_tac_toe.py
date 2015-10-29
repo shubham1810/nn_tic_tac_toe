@@ -1,4 +1,5 @@
 import random
+from neural_net import NeuralNet
 
 PLAYER = 0
 
@@ -83,12 +84,17 @@ if __name__ == '__main__':
     p2 = 0
     n = 1000
     for i in range(n):
+        nn_player = NeuralNet()
         PLAYER = 1
         game = Game()
         while game.check_status() == 10:  # The game continues
             av = game.available_moves()
             # print av
-            move = random.choice(av)
+            if PLAYER == 1:
+                move = nn_player.forward_pass(game.linear_board())
+                # print move
+            else:
+                move = random.choice(av)
             # print move, "MOVE"
             game.play(move, PLAYER)
             status = game.check_status()
