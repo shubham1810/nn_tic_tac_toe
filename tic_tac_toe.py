@@ -78,6 +78,40 @@ class Game:
         return 0
 
 
+def play_game(nn_player, player_type):
+    p1 = 0
+    p2 = 0
+    n = 100
+    for i in range(n):
+        PLAYER = 1
+        game = Game()
+        while game.check_status() == 10:  # The game continues
+            av = game.available_moves()
+            # print av
+            if PLAYER == player_type:
+                move = nn_player.forward_pass(game.linear_board())
+                # print move
+            else:
+                move = random.choice(av)
+            # print move, "MOVE"
+            game.play(move, PLAYER)
+            status = game.check_status()
+            if status == 1:
+                # print "Player 1 has won"
+                p1 += 1
+            elif status == -1:
+                # print "Player 2 has won"
+                p2 += 1
+            elif status == 0:
+                # print "Game was a draw"
+                pass
+            PLAYER *= -1
+    wins = p1
+    losses = p2
+    draws = n - (wins + losses)
+    return wins, losses, draws
+
+
 if __name__ == '__main__':
     PLAYER = 1
     p1 = 0
@@ -90,7 +124,7 @@ if __name__ == '__main__':
         while game.check_status() == 10:  # The game continues
             av = game.available_moves()
             # print av
-            if PLAYER == 1:
+            if PLAYER == -1:
                 move = nn_player.forward_pass(game.linear_board())
                 # print move
             else:

@@ -1,25 +1,11 @@
 """
 Neural Network Class to save data about the net and train the player
 
-chromosome will be as follows:
-the chromosome is a 2D matrix
-TODO: Change the matrix structure in this diagram for the New NN structure
-        | [<------------ l1 + 1 ------------>]
-        | [                            |  0  ]
-        | [                            |  0  ]
-        | [              W1            |  0  ]
-        | [                            |  0  ]
-        | [                            |  0  ]
-   (9+l2) [----------------------------|- 1 -]
-        | [                            |     ]
-        | [                            |     ]
-        | [              W2            |  W3 ]
-        | [                            |     ]
-        | [                            |     ]
-        | [                            |     ]
+chromosome is 1D linear array of weights.
 
 """
 import numpy as np
+import random
 from helpers import softmax
 
 
@@ -28,14 +14,14 @@ class NeuralNet:
         self.NX = 9
         self.LAYERS = 2
         self.N1 = 10
-        self.N2 = 10
+        self.N2 = 11
         self.NY = 9
         self.X = np.zeros(self.NX)
         # self.W1 = np.zeros((self.NX, self.N1))
         self.W1 = np.random.rand(self.NX, self.N1)
         self.L1 = np.zeros((1, self.N1))
         # self.W2 = np.zeros((self.N2, self.N1))
-        self.W2 = np.random.rand(self.N2, self.N1)
+        self.W2 = np.random.rand(self.N1, self.N2)
         self.L2 = np.zeros((1, self.N2))
         # self.W3 = np.zeros((self.N2, self.NY))
         self.W3 = np.random.rand(self.N2, self.NY)
@@ -43,7 +29,8 @@ class NeuralNet:
         self.activation = np.zeros((1, self.NX))
         self.y_out = []
         self.OUT = 0
-        self.fitness = 0
+        self.fitness = random.random()
+        self.CHROMOSOME = list(self.W1.flatten()) + list(self.W2.flatten()) + list(self.W3.flatten())
 
     def forward_pass(self, inp):
 
@@ -55,7 +42,7 @@ class NeuralNet:
 
         self.X = self.activation
         self.L1 = np.tanh(np.dot(self.X, self.W1))
-        self.L2 = np.tanh(np.dot(self.L1, self.W2.T))
+        self.L2 = np.tanh(np.dot(self.L1, self.W2))
         self.Y = softmax(np.dot(self.L2, self.W3))
         self.y_out = []
         for ix in range(self.Y.shape[1]):
