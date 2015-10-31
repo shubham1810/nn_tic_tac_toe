@@ -39,11 +39,13 @@ class Game:
 
         # check status for win on the board
         for i in self.board:
+            #print i
             sum_ = 0
             for j in i:
                 sum_ += j
             if abs(sum_) == 3:
                 # we have a winner
+                # print "win here"
                 return int(sum_ / 3)
 
         # check vertically
@@ -53,6 +55,7 @@ class Game:
                 sum_ += self.board[j][i]
             if abs(sum_) == 3:
                 # we have a vertical winner
+                # print "win there"
                 return int(sum_ / 3)
 
         # check diagonally
@@ -60,12 +63,14 @@ class Game:
         for i in range(3):
             sum_ += self.board[i][i]
         if abs(sum_) == 3:
+            # print "Thats a win"
             # we have a front diagonal winner
             return int(sum_ / 3)
 
         sum_ = self.board[2][0] + self.board[1][1] + self.board[0][2]
         if abs(sum_) == 3:
             # last check for winner
+            # "Or this maybe"
             return int(sum_ / 3)
 
         # check draw if game ended
@@ -109,6 +114,7 @@ def play_game(nn_player, player_type):
     wins = p1
     losses = p2
     draws = n - (wins + losses)
+    # print "one player done"
     return wins, losses, draws
 
 

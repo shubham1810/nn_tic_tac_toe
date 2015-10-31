@@ -7,11 +7,14 @@ import random
 from neural_net import NeuralNet
 from tic_tac_toe import play_game
 import copy
+import matplotlib.pyplot as plt
+import matplotlib
 
-MUTATION_RATE = 0.3
+
+MUTATION_RATE = 0.5
 POPULATION_SIZE = 100
 MAX_GENERATIONS = 50
-CROSSOVER_RATE = 0.7
+CROSSOVER_RATE = 0.5
 
 WIN_SCORE = 1.0
 LOSS_SCORE = -6.0
@@ -25,6 +28,45 @@ class GeneticAlgorithm:
 
     def sort_fitness(self):
         self.population = sorted(self.population, key=lambda x: x.fitness, reverse=True)
+    
+    def evolve_and_plot_weights(self):
+        best_player_across_generations = NeuralNet()
+        best_fitness_across_generations = -100
+        current_gen = 1
+        while current_gen <= MAX_GENERATIONS:
+
+            for p in self.population:
+                p.fitness = self.calculate_fitness(p)
+            self.sort_fitness()
+
+            best_player = self.population[0]
+            if best_player.fitness > best_fitness_across_generations:
+                best_fitness_across_generations = best_player.fitness
+                best_player_across_generations = copy.deepcopy(best_player)
+            print "Current generation: " + str(current_gen) + " , best fitness: " + str(best_player.fitness)
+            plt.subplot(1, 3, 1)
+            plt.pcolor(best_player.W1)
+            plt.subplot(1, 3, 2)
+            plt.pcolor(best_player.W2)
+            plt.subplot(1, 3, 3)
+            plt.pcolor(best_player.W3)
+            plt.show()
+
+            temp = []
+            while len(temp) < POPULATION_SIZE:
+                offspring_one = self.population[self.selection_function()]
+                offspring_two = self.population[self.selection_function()]
+
+                offspring_one.CHROMOSOME, offspring_two.CHROMOSOME = self.crossover(offspring_one.CHROMOSOME,
+                                                                                    offspring_two.CHROMOSOME)
+
+                offspring_one.CHROMOSOME = self.mutate(offspring_one.CHROMOSOME)
+                offspring_two.CHROMOSOME = self.mutate(offspring_two.CHROMOSOME)
+
+                temp.append(offspring_one)
+                temp.append(offspring_two)
+            self.population, temp = temp, self.population
+            current_gen += 1
 
     def evolve(self):
         best_player_across_generations = NeuralNet()
@@ -102,12 +144,17 @@ class GeneticAlgorithm:
         :param offspring2: second NN player
         :return: new offsprings generated
         """
-        if random_number() < CROSSOVER_RATE:
-            crossover_val = int(random_number() * len(offspring1))
-            t1 = offspring1[:crossover_val] + offspring2[crossover_val:]
-            t2 = offspring2[:crossover_val] + offspring1[crossover_val:]
+        # if random_number() < CROSSOVER_RATE:
+        #     crossover_val = int(random_number() * len(offspring1))
+        #     t1 = offspring1[:crossover_val] + offspring2[crossover_val:]
+        #     t2 = offspring2[:crossover_val] + offspring1[crossover_val:]
 
-            return t1, t2
+        # Changing the way we do crossovers
+        for c_ix in range(len(offspring1)):
+            if random_number() < CROSSOVER_RATE:
+                offspring1[c_ix], offspring2[c_ix] = offspring2[c_ix], offspring1[c_ix]
+
+        #     return t1, t2
         return offspring1, offspring2
 
     def mutate(self, chromo):

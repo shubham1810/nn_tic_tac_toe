@@ -50,6 +50,17 @@ class NeuralNet:
         self.OUT = np.argmax(self.y_out)
         return self.OUT
 
+    def load_from_genome(self, w1, w2, w3, nx, n1, n2, ny, fit):
+        self.NX = nx
+        self.N1 = n1
+        self.N2 = n2
+        self.NY = ny
+
+        self.W1 = np.reshape(w1.flatten(), (nx, n1))
+        self.W2 = np.reshape(w2.flatten(), (n1, n2))
+        self.W3 = np.reshape(w3.flatten(), (n2, ny))
+        self.fitness = fit
+
 
 if __name__ == '__main__':
     nn = NeuralNet()
